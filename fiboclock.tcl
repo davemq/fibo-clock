@@ -2,6 +2,16 @@
 
 set seconds_mode 0
 
+# set up next update
+proc next_update {} {
+    global seconds_mode
+
+    set t [clock seconds]
+    set increment [expr $seconds_mode ? 5 : 300]
+    set next [expr $increment - ($t % $increment)]
+    after $next update_colors
+}
+
 # toggle seconds mode
 proc toggle_seconds_mode {} {
     global seconds_mode
@@ -9,11 +19,7 @@ proc toggle_seconds_mode {} {
     set seconds_mode [expr ! $seconds_mode]
     after cancel update_colors
     
-    # Set up next update
-    set t [clock seconds]
-    set increment [expr $seconds_mode ? 5 : 300]
-    set next [expr $increment - ($t % $increment)]
-    after $next update_colors
+    next_update
 }
 
 # procedure to update colors
@@ -74,11 +80,7 @@ proc update_colors {} {
 
     }
 
-    # Set up next update
-    set t [clock seconds]
-    set increment [expr $seconds_mode ? 5 : 300]
-    set next [expr $increment - ($t % $increment)]
-    after $next update_colors
+    next_update
 }
 
 
