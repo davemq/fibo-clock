@@ -1,14 +1,32 @@
 #!/usr/bin/wish
 
+set seconds_mode 0
+
+# toggle seconds mode
+proc toggle_seconds_mode {} {
+    global seconds_mode
+    
+    set seconds_mode [expr ! $seconds_mode]
+    after cancel update_colors
+    
+    # Set up next update
+    set t [clock seconds]
+    set increment [expr $seconds_mode ? 5 : 300]
+    set next [expr $increment - ($t % $increment)]
+    after $next update_colors
+}
+
 # procedure to update colors
 proc update_colors {} {
 
+    global seconds_mode
+
     # Update colors
-    set hourcolor   red
-    set mincolor    green
-    set bothcolor   blue
-    set nocolor     white
-    set hour12color red
+    set hourcolor   0xfff000000
+    set mincolor    0x000fff000
+    set seccolor    0x000000fff
+    set nocolor     #000000000
+    set hour12color $hourcolor
 
     # get time
     set t [clock seconds]
@@ -18,6 +36,13 @@ proc update_colors {} {
     # Deal with 08 and 09 not being octal
     set m [string map {08 8 09 9} [clock format $t -format "%M"]]
     set m [expr $m / 5]
+
+    # Seconds
+    if {$seconds_mode} {
+	# Deal with 08 and 09 not being octal
+	set s [string map {08 8 09 9} [clock format $t -format "%S"]]
+	set s [expr $s / 5]
+    }
 
     # Set noon/midnight color
     if {$h == 0 || $h == 12} {
@@ -29,26 +54,30 @@ proc update_colors {} {
 
     foreach i {5 3 2 1} {
 
+	set result 0
 	if {$h >= $i} {
 	    set h [expr $h - $i]
-	    if {$m >= $i} {
-		.c${i} configure -background $bothcolor
-		set m [expr $m - $i]
-	    } else {
-		.c${i} configure -background $hourcolor
-	    }
-	} elseif {$m >= $i} {
-	    set m [expr $m - $i]
-	    .c${i} configure -background $mincolor
-	} else {
-	    .c${i} configure -background $nocolor
+	    set result [expr $result | $hourcolor]
 	}
-	
+
+	if {$m >= $i} {
+	    set m [expr $m - $i]
+	    set result [expr $result | $mincolor]
+	}
+
+	if {$seconds_mode && ($s >= $i)} {
+	    set s [expr $s - $i]
+	    set result [expr $result | $seccolor]
+	}
+
+	.c${i} configure -background [format "#%09x" $result]
+
     }
 
     # Set up next update
     set t [clock seconds]
-    set next [expr 300 - ($t % 300)]
+    set increment [expr $seconds_mode ? 5 : 300]
+    set next [expr $increment - ($t % $increment)]
     after $next update_colors
 }
 
@@ -73,6 +102,10 @@ grid rowconfigure . 2 -weight 3
 grid columnconfigure . 0 -weight 2
 grid columnconfigure . 1 -weight 1
 grid columnconfigure . 2 -weight 5
+
+# Key bindings
+bind . q exit
+bind . s toggle_seconds_mode
 
 # Update colors
 update_colors
