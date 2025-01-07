@@ -33,6 +33,9 @@ proc update_colors {} {
     set seccolor    0x000000fff
     set nocolor     0x000000000
 
+    # Divisor
+    set divisor 5
+
     # get time
     set t [clock seconds]
 
@@ -40,13 +43,13 @@ proc update_colors {} {
 
     # Deal with 08 and 09 not being octal
     set m [string map {08 8 09 9} [clock format $t -format "%M"]]
-    set m [expr $m / 5]
+    set m [expr $m / $divisor]
 
     # Seconds
     if {$seconds_mode} {
 	# Deal with 08 and 09 not being octal
 	set s [string map {08 8 09 9} [clock format $t -format "%S"]]
-	set s [expr $s / 5]
+	set s [expr $s / $divisor]
     }
 
     foreach l [list {5 .c5} {3 .c3} {2 .c2} {1 .c1} {1 .c12}] {
