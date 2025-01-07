@@ -31,8 +31,7 @@ proc update_colors {} {
     set hourcolor   0xfff000000
     set mincolor    0x000fff000
     set seccolor    0x000000fff
-    set nocolor     0x00000000
-    set hour12color $hourcolor
+    set nocolor     0x000000000
 
     # get time
     set t [clock seconds]
@@ -50,16 +49,11 @@ proc update_colors {} {
 	set s [expr $s / 5]
     }
 
-    # Set noon/midnight color
-    if {$h == 0 || $h == 12} {
-	.c12 configure -background [format "#%09x" $hour12color]
-	set h 12
-    } else {
-	.c12 configure -background [format "#%09x" $nocolor]
-    }
+    foreach l [list {5 .c5} {3 .c3} {2 .c2} {1 .c1} {1 .c12}] {
 
-    foreach i {5 3 2 1} {
-
+	set i [lindex $l 0]
+	set w [lindex $l 1]
+	
 	set result 0
 	if {$h >= $i} {
 	    set h [expr $h - $i]
@@ -76,7 +70,7 @@ proc update_colors {} {
 	    set result [expr $result | $seccolor]
 	}
 
-	.c${i} configure -background [format "#%09x" $result]
+	${w} configure -background [format "#%09x" $result]
 
     }
 
