@@ -1,13 +1,21 @@
 #!/usr/bin/wish
 
-set seconds_mode 0
+# globals
+set minincrement 300
+set secincrement 60
+set hmdivisor    5
+set secdivisor   60
+
+set seconds_mode 0;		# really sub-minute units
 
 # set up next update
 proc next_update {} {
+    global minincrement
+    global secincrement
     global seconds_mode
 
     set t [clock seconds]
-    set increment [expr $seconds_mode ? 5 : 300]
+    set increment [expr $seconds_mode ? $secincrement : $minincrement]
     set next [expr $increment - ($t % $increment)]
     after $next update_colors
 }
@@ -25,6 +33,9 @@ proc toggle_seconds_mode {} {
 # procedure to update colors
 proc update_colors {} {
 
+    global hmdivisor
+    global secdivisor
+    global minincrement
     global seconds_mode
 
     # Update colors
@@ -33,9 +44,6 @@ proc update_colors {} {
     set seccolor    0x000000fff
     set nocolor     0x000000000
 
-    # Divisor
-    set divisor 5
-
     # get time
     set t [clock seconds]
 
@@ -43,13 +51,13 @@ proc update_colors {} {
 
     # Deal with 08 and 09 not being octal
     set m [string map {08 8 09 9} [clock format $t -format "%M"]]
-    set m [expr $m / $divisor]
+    set m [expr $m / $hmdivisor]
 
     # Seconds
     if {$seconds_mode} {
 	# Deal with 08 and 09 not being octal
-	set s [string map {08 8 09 9} [clock format $t -format "%S"]]
-	set s [expr $s / $divisor]
+	set s [expr [clock seconds] % $minincrement]
+	set s [expr $s / $secdivisor]
     }
 
     foreach l [list {5 .c5} {3 .c3} {2 .c2} {1 .c1} {1 .c12}] {
