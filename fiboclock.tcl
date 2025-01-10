@@ -26,7 +26,7 @@ proc toggle_seconds_mode {} {
     set seconds_mode [expr ! $seconds_mode]
     after cancel update_colors
     
-    next_update
+    update_colors
 }
 
 # procedure to update colors
