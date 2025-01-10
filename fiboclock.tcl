@@ -2,7 +2,7 @@
 
 # globals
 set secincrement 60
-set hmdivisor    3
+set hmdivisor    2
 set minincrement [expr $hmdivisor * 60]
 set secdivisor   60
 
@@ -47,7 +47,7 @@ proc update_colors {} {
     # get time
     set t [clock seconds]
 
-    set h [string trimleft [clock format $t -format "%I"] "0"]
+    set h [string trimleft [clock format $t -format "%H"] "0"]
 
     # Deal with 08 and 09 not being octal
     set m [string map {08 8 09 9} [clock format $t -format "%M"]]
@@ -60,7 +60,7 @@ proc update_colors {} {
 	set s [expr $s / $secdivisor]
     }
 
-    foreach l [list {8 .c8} {5 .c5} {3 .c3} {2 .c2} {1 .c1} {1 .c12}] {
+    foreach l [list {13 .c13} {8 .c8} {5 .c5} {3 .c3} {2 .c2} {1 .c1} {1 .c12}] {
 
 	set i [lindex $l 0]
 	set w [lindex $l 1]
@@ -91,6 +91,7 @@ proc update_colors {} {
 
 
 # Set up canvas widgets
+canvas .c13 -height 0 -width 0 -background white -relief solid -bd 1
 canvas .c8 -height 0 -width 0 -background white -relief solid -bd 1
 canvas .c5 -height 0 -width 0 -background white -relief solid -bd 1
 canvas .c3 -height 0 -width 0 -background white -relief solid -bd 1
@@ -103,18 +104,20 @@ canvas .c12 -height 0 -width 0 -background white -relief solid -bd 1
 # grid ^   .c12 ^   -sticky nsew
 # grid .c3 -    ^    -sticky nsew
 
-grid .c3 .c2  -   .c8 -sticky nsew
-grid ^   .c12 .c1 ^   -sticky nsew
-grid .c5 -    -   ^   -sticky nsew
+grid .c5 .c3  -   .c13 -sticky nsew
+grid ^   .c12 .c2 ^    -sticky nsew
+grid ^   .c1  ^   ^    -sticky nsew
+grid .c8 -    -   ^    -sticky nsew
 
 # Configure grid weights
-grid rowconfigure . 0 -weight 2
+grid rowconfigure . 0 -weight 3
 grid rowconfigure . 1 -weight 1
-grid rowconfigure . 2 -weight 5
-grid columnconfigure . 0 -weight 3
+grid rowconfigure . 2 -weight 1
+grid rowconfigure . 3 -weight 8
+grid columnconfigure . 0 -weight 5
 grid columnconfigure . 1 -weight 1
-grid columnconfigure . 2 -weight 1
-grid columnconfigure . 3 -weight 8
+grid columnconfigure . 2 -weight 2
+grid columnconfigure . 3 -weight 13
 
 # Key bindings
 bind . q exit
