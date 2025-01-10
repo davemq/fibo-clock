@@ -15,7 +15,7 @@ proc next_update {} {
 
     set t [clock seconds]
     set increment [expr $seconds_mode ? $secincrement : $minincrement]
-    set next [expr $increment - ($t % $increment)]
+    set next [expr 1000 * *$increment - ($t % $increment))]
     after $next update_colors
 }
 
