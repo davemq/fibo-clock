@@ -4,7 +4,6 @@
 set secincrement 60
 set hmdivisor    3
 set minincrement [expr $hmdivisor * 60]
-set secdivisor   60
 
 set seconds_mode 0;		# really sub-minute units
 
@@ -34,7 +33,7 @@ proc toggle_seconds_mode {} {
 proc update_colors {} {
 
     global hmdivisor
-    global secdivisor
+    global secincrement
     global minincrement
     global seconds_mode
 
@@ -57,7 +56,7 @@ proc update_colors {} {
     if {$seconds_mode} {
 	# Deal with 08 and 09 not being octal
 	set s [expr [clock seconds] % $minincrement]
-	set s [expr $s / $secdivisor]
+	set s [expr $s / $secincrement]
     }
 
     foreach l [list {8 .c8} {5 .c5} {3 .c3} {2 .c2} {1 .c1} {1 .c12}] {
