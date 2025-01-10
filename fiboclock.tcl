@@ -1,9 +1,9 @@
 #!/usr/bin/wish
 
 # globals
-set minincrement 300
 set secincrement 60
-set hmdivisor    5
+set hmdivisor    3
+set minincrement [expr $hmdivisor * 60]
 set secdivisor   60
 
 set seconds_mode 0;		# really sub-minute units
@@ -60,7 +60,7 @@ proc update_colors {} {
 	set s [expr $s / $secdivisor]
     }
 
-    foreach l [list {5 .c5} {3 .c3} {2 .c2} {1 .c1} {1 .c12}] {
+    foreach l [list {8 .c8} {5 .c5} {3 .c3} {2 .c2} {1 .c1} {1 .c12}] {
 
 	set i [lindex $l 0]
 	set w [lindex $l 1]
@@ -91,6 +91,7 @@ proc update_colors {} {
 
 
 # Set up canvas widgets
+canvas .c8 -height 0 -width 0 -background white -relief solid -bd 1
 canvas .c5 -height 0 -width 0 -background white -relief solid -bd 1
 canvas .c3 -height 0 -width 0 -background white -relief solid -bd 1
 canvas .c2 -height 0 -width 0 -background white -relief solid -bd 1
@@ -98,17 +99,22 @@ canvas .c1 -height 0 -width 0 -background white -relief solid -bd 1
 canvas .c12 -height 0 -width 0 -background white -relief solid -bd 1
 
 # Place canvas widgets in grid
-grid .c2 .c1  .c5 -sticky nsew
-grid ^   .c12 ^   -sticky nsew
-grid .c3 -    ^    -sticky nsew
+# grid .c2 .c1  .c5 -sticky nsew
+# grid ^   .c12 ^   -sticky nsew
+# grid .c3 -    ^    -sticky nsew
+
+grid .c3 .c2  -   .c8 -sticky nsew
+grid ^   .c12 .c1 ^   -sticky nsew
+grid .c5 -    -   ^   -sticky nsew
 
 # Configure grid weights
-grid rowconfigure . 0 -weight 1
+grid rowconfigure . 0 -weight 2
 grid rowconfigure . 1 -weight 1
-grid rowconfigure . 2 -weight 3
-grid columnconfigure . 0 -weight 2
+grid rowconfigure . 2 -weight 5
+grid columnconfigure . 0 -weight 3
 grid columnconfigure . 1 -weight 1
-grid columnconfigure . 2 -weight 5
+grid columnconfigure . 2 -weight 1
+grid columnconfigure . 3 -weight 8
 
 # Key bindings
 bind . q exit
