@@ -121,6 +121,7 @@ grid columnconfigure . 3 -weight 13
 # Key bindings
 bind . q exit
 bind . s toggle_seconds_mode
+bind . m toggle_seconds_mode
 
 # Update colors
 update_colors
