@@ -1,9 +1,9 @@
 #!/usr/bin/wish
 
 # globals
-set minincrement 300
 set secincrement 60
 set hmdivisor    5
+set minincrement [expr $hmdivisor * 60]
 
 set seconds_mode 0;		# really sub-minute units
 
