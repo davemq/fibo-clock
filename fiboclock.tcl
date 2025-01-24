@@ -7,6 +7,13 @@ set minincrement [expr $hmdivisor * 60]
 
 set seconds_mode 0;		# really sub-minute units
 
+# Update colors
+set hourcolor   [expr int(rand() * 2**24)]
+set mincolor    [expr int(rand() * 2**24)]
+set seccolor    [expr int(rand() * 2**24)]
+set nocolor     [expr 0xffffff ^ $hourcolor ^ $mincolor ^ $seccolor]
+set formatstring "#%06x"
+
 # set up next update
 proc next_update {} {
     global minincrement
@@ -36,12 +43,11 @@ proc update_colors {} {
     global secincrement
     global minincrement
     global seconds_mode
-
-    # Update colors
-    set hourcolor   0xfff000000
-    set mincolor    0x000fff000
-    set seccolor    0x000000fff
-    set nocolor     0x000000000
+    global hourcolor
+    global mincolor
+    global seccolor
+    global nocolor
+    global formatstring
 
     # get time
     set t [clock seconds]
@@ -80,7 +86,11 @@ proc update_colors {} {
 	    set result [expr $result ^ $seccolor]
 	}
 
-	${w} configure -background [format "#%09x" $result]
+	if {$result == 0} {
+	    set result $nocolor
+	}
+
+	${w} configure -background [format $formatstring $result]
 
     }
 
