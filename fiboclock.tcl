@@ -67,17 +67,17 @@ proc update_colors {} {
 	set result 0
 	if {$h >= $i} {
 	    set h [expr $h - $i]
-	    set result [expr $result | $hourcolor]
+	    set result [expr $result ^ $hourcolor]
 	}
 
 	if {$m >= $i} {
 	    set m [expr $m - $i]
-	    set result [expr $result | $mincolor]
+	    set result [expr $result ^ $mincolor]
 	}
 
 	if {$seconds_mode && ($s >= $i)} {
 	    set s [expr $s - $i]
-	    set result [expr $result | $seccolor]
+	    set result [expr $result ^ $seccolor]
 	}
 
 	${w} configure -background [format "#%09x" $result]
